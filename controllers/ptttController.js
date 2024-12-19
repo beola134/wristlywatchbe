@@ -108,7 +108,7 @@ exports.zaloPay = async (req, res) => {
       amount: amount,
       description: `Payment for order #${transID}`,
       bank_code: "",
-      callback_url: "https://c4e2-171-243-48-82.ngrok-free.app/pttt/callback",
+      callback_url: "https://wristlywatchbe-bd4bdd62f0ed.herokuapp.com/pttt/callback",
     };
 
     const data = `${config.app_id}|${paymentData.app_trans_id}|${paymentData.app_user}|${paymentData.amount}|${paymentData.app_time}|${paymentData.embed_data}|${paymentData.item}`;
