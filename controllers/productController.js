@@ -487,6 +487,7 @@ exports.getProducts = async (req, res) => {
           include: {
             model: DonHang,
             where: { trang_thai: "Giao hàng thành công" },
+            attributes: [],
           },
         });
 
