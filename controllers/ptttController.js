@@ -95,7 +95,7 @@ exports.zaloPay = async (req, res) => {
       }
     });
     const embed_data = {
-      redirecturl: "http://localhost:3001",
+      redirecturl: "https://wristlywatch.vercel.app",
     };
 
     const paymentData = {
