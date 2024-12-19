@@ -231,7 +231,6 @@ const getvoucher = async (req, res) => {
   }
 };
 
-//ẩn voucher và hiện voucher
 
 module.exports = {
   addVoucher,

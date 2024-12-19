@@ -24,13 +24,6 @@ router.delete("/deletecate/:id", danhmucController.deleteCate);
 router.put("/updatecate/:id", danhmucController.updateCate);
 
 ////////////////////////////////header//////////////////////
-//http://localhost:5000/cate/danhmuc
-router.get('/danhmuc', danhmucController.getdanhmuc);
-
-//getSanPhamKhac
-//http://localhost:5000/cate/getSanPhamKhac
-router.get('/getSanPhamKhac', danhmucController.getSanPhamKhac);
-
 //danhmucadmin
 //http://localhost:5000/cate/getAllCateadmin
 router.get('/getAllCateadmin', danhmucController.getAllCateadmin);

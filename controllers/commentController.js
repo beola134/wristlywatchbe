@@ -13,7 +13,7 @@ exports.showAllComment = async (req, res) => {
       const users = await Users.findAll({
         where: {
           ten_dang_nhap: {
-            [Op.like]: `%${ten_dang_nhap}%`, // Tìm kiếm phần của tên đăng nhập
+            [Op.like]: `%${ten_dang_nhap}%`,
           },
         },
       });
@@ -30,6 +30,7 @@ exports.showAllComment = async (req, res) => {
       filter = { id_nguoi_dung: { [Op.in]: userIds } };
     }
     const comments = await CMT.findAll({
+      order: [["ngay_binh_luan", "DESC"]],
       where: filter,
       limit,
       offset,
@@ -71,8 +72,7 @@ exports.showAllComment = async (req, res) => {
 //Bình luận sản phẩm theo _id sản phẩm và _id người dùng
 exports.addComment = async (req, res) => {
   try {
-    const { id_san_pham, id_nguoi_dung, noi_dung, sao } = req.body;
-
+    const { id_san_pham, id_nguoi_dung, noi_dung} = req.body;
     // Kiểm tra xem sản phẩm và người dùng có tồn tại không
     const [product, user] = await Promise.all([
       Product.findOne({ where: { _id: id_san_pham } }),
@@ -223,16 +223,12 @@ exports.getComment = async (req, res) => {
 exports.updateComment = async (req, res) => {
   try {
     const { id } = req.params;
-    const { tra_loi_binh_luan } = req.body;  // Use tra_loi_binh_luan instead of noi_dung
+    const { tra_loi_binh_luan } = req.body;
     const comment = await CMT.findOne({ where: { _id: id } });
-
     if (!comment) {
       return res.status(404).json({ message: "Không tìm thấy bình luận" });
     }
-
-    // Update the reply to the comment (tra_loi_binh_luan)
     const updatedComment = await comment.update({ tra_loi_binh_luan });
-
     res.status(200).json({
       message: "Cập nhật bình luận thành công",
       comment: updatedComment,

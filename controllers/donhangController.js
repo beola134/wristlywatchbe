@@ -169,9 +169,6 @@ const getAllDonHang = async (req, res) => {
       { order: [["thoi_gian_tao", "DESC"]] }
       
     );
-    // if (donHangs.length === 0) {
-    //   return res.status(404).json({ message: "Không tìm thấy đơn hàng." });
-    // } 
     return res.status(200).json({donHangs});
   } catch (error) {
     console.error("Lỗi khi lấy đơn hàng:", error);
@@ -190,15 +187,16 @@ const updateDonHang = async (req, res) => {
     if (!donHang) {
       return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
     }
-    
     donHang.trang_thai = trang_thai;
+    // Nếu trạng thái là "Giao hàng thành công", cập nhật trạng thái thanh toán
+    if (trang_thai === "Giao hàng thành công") {
+      donHang.trang_thai_thanh_toan = "Đã thanh toán";
+    }
     await donHang.save();
-
     if (trang_thai === "Đơn hàng đã hủy") {
       const chiTietDonHangs = await ChiTietDonHang.findAll({
         where: { id_don_hang: id },
       });
-      
       if (chiTietDonHangs.length > 0) {
         const updateProducts = chiTietDonHangs.map(async (ct) => {
           const product = await Product.findByPk(ct.id_san_pham);
@@ -209,7 +207,6 @@ const updateDonHang = async (req, res) => {
         });
         await Promise.all(updateProducts);
       }
-
       // Kiểm tra và cộng lại số lượng của voucher nếu đơn hàng có voucher
       if (donHang.id_voucher) {
         const voucher = await Voucher.findByPk(donHang.id_voucher);
@@ -219,7 +216,6 @@ const updateDonHang = async (req, res) => {
         }
       }
     }
-
     res.json({ message: "Cập nhật trạng thái đơn hàng thành công", donHang });
   } catch (error) {
     console.error("Lỗi khi cập nhật trạng thái đơn hàng:", error);
@@ -316,44 +312,6 @@ const getDonHangByUserId = async (req, res) => {
   }
 };
 
-///show chi tiết đơn hàng
-
- const getAllOrderDetails = async (req, res) => {
-   try {
-     const { limit = 2, page = 1, ten_san_pham = "" } = req.query;
-
-     const offset = (page - 1) * limit;
-
-     const searchCondition = ten_san_pham
-       ? { ten_san_pham: { [Op.like]: `%${ten_san_pham}%` } }
-       : {};
-
-     const { rows: ordersDetail, count: totalOrders } =
-       await ChiTietDonHang.findAndCountAll({
-         where: searchCondition,
-         limit: parseInt(limit),
-         offset: parseInt(offset),
-       });
-
-     const totalPages = Math.ceil(totalOrders / limit);
-     if (!ordersDetail || ordersDetail.length === 0) {
-       return res.status(200).json({
-         ordersDetail: [],
-         currentPage: parseInt(page),
-         totalPages: 0,
-         totalOrders: 0,
-       });
-     }
-     res.status(200).json({
-       ordersDetail,
-       currentPage: parseInt(page),
-       totalPages,
-       totalOrders,
-     })
-   } catch (error) {
-     res.status(500).json({ error: error.message });
-   }
- };
 
 module.exports = {
   addDonHang,
@@ -361,5 +319,4 @@ module.exports = {
   getAllDonHangByUserId,
   getDonHangByUserId,
   getAllDonHang,
-  getAllOrderDetails,
 };

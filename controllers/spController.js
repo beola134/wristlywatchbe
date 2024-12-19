@@ -50,26 +50,6 @@ exports.getAllProducts = async (req, res) => {
 };
 
 
-
-  //show sản phẩm theo danh mục show lun thông tin danh mục sản phẩm
-  exports.getProductsByThuongHieu = async (req, res) => {
-    try {
-      const products = await Product.findAll({
-        where: {
-          id_thuong_hieu: req.params.id,
-          loai: {
-            [Op.notIn]: ["Vòng Tay", "Trang Sức"],
-          },
-        },
-      });
-
-      const th = await ThuongHieu.findOne({ where: { _id: req.params.id } });
-      res.json({ products, th });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
-
   //Chi tiết sản phẩm theo id
   exports.getProductById = async (req, res) => {
     try {
@@ -324,9 +304,6 @@ exports.getRelatedProducts = async (req, res) => {
           _id: {
             [Op.not]: product._id, 
           },
-          loai: {
-            [Op.notIn]: ["Vòng Tay", "Trang Sức"],
-          }
         },
       });
       const th = await ThuongHieu.findOne({ where: { _id: product.id_thuong_hieu } });

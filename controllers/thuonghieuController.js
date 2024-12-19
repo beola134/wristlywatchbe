@@ -2,27 +2,6 @@ const ThuongHieu = require("../models/thuonghieu");
 const upload = require("../config/update");
 const { Op, where } = require('sequelize'); // Import Op từ sequelize
 
-// Lấy tất cả thương hiệu
-exports.getAllCates = async (req, res) => {
-  try {
-    const cates = await Cate.findAll({
-      where: {
-        _id: {
-          [Op.notIn]: [
-            '09204055-d105-4c21-90e3-58ee82d2f65a', 
-            '92ad8d9a-fba0-48db-a93d-6974bb5a9ed9',
-            '14257815-7fd6-41ac-9cd1-6a5d54f0eaa4',
-            'ba2c7104-9bb0-448b-920a-3baffebbb7d6'
-          ]
-        }
-      }
-    });
-    res.json({ cates });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
 //lấy tất cả thương hiệu
 exports.getAllThuongHieu = async (req, res) => {
   try {
@@ -46,7 +25,7 @@ exports.getthuonghieuById = async (req, res) => {
   }
 };
 
-// Hàm xử lý việc thêm danh mục với hình ảnh
+// Hàm xử lý việc thêm Thương hiệu với hình ảnh
 exports.addThuongHieu = async (req, res) => {
   try {
     // Sử dụng upload.fields để xử lý nhiều hình ảnh
@@ -69,7 +48,7 @@ exports.addThuongHieu = async (req, res) => {
 };
 
 
-// Hàm xử lý việc xóa danh mục
+// Hàm xử lý việc xóa Thương hiệu
 exports.deletethuonghieu = async (req, res) => {
   try {
     const th = await ThuongHieu.findOne({ where: { _id: req.params.id } });
@@ -83,10 +62,10 @@ exports.deletethuonghieu = async (req, res) => {
   }
 };
 
-// Hàm xử lý việc cập nhật danh mục
+// Hàm xử lý việc cập nhật Thương hiệu
 exports.updateThuongHieu = async (req, res) => {
   try {
-    // Tìm danh mục theo ID
+    // Tìm Thương hiệu theo ID
     const th = await ThuongHieu.findOne({ where: { _id: req.params.id } });
     if (!th) {
       return res.status(404).json({ error: "Không tìm thấy thương hiệu" });

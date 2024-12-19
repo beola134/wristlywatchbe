@@ -27,25 +27,8 @@ router.post("/register", usersController.register);
 //http://localhost:5000/users/sendOTP
 router.post("/sendOTP", usersController.sendOTP);
 
-// //kiểm tra mã otp có đúng không
-// //http://localhost:5000/users/verifyotp
-// router.post("/verifyotp", usersController.verifyOtp);
-
-// Đăng nhập tài khoản
-//http://localhost:5000/users/login
-// {
-//     "email": "nguyentai12a72122@gmail.com",
-//     "mat_khau": "1111111111"
-// }
+//api đăng nhập
 router.post("/login", usersController.login);
-
-//quên mật khẩu
-//http://localhost:5000/users/forgotpassword
-router.post("/forgotpassword", usersController.forgotPassword);
-
-//đặt lại mật khẩu
-//http://localhost:5000/users/resetpassword/:resetToken
-router.put("/resetpassword/:resetToken", usersController.resetPassword);
 
 //đổi mật khẩu
 //http://localhost:5000/users/changepassword

@@ -77,9 +77,6 @@ exports.getAllOrdersWithUserDetails = async (req, res) => {
 };
 
 
-
-
-
 // Thống kê tổng số sản phẩm
 exports.getTotalProducts = async (req, res) => {
     try {
@@ -90,17 +87,6 @@ exports.getTotalProducts = async (req, res) => {
     console.log("Error: ", error);
     res.status(500).json({ error: error.message });
     }
-};
-
-//thống kê số lượng sản phẩm
-exports.getTotalProductsCount = async (req, res) => {
-  try {
-    const totalProductsCount = await Product.sum("so_luong");
-    res.json({ totalProductsCount });
-  } catch (error) {
-    console.log("Error: ", error);
-    res.status(500).json({ error: error.message });
-  }
 };
 
 // Thống kê tổng thương hiệu sản phẩm
@@ -131,8 +117,7 @@ exports.getTotalDonHang = async (req, res) => {
   try {
     const totalOrders = await DonHang.count({
       where: { trang_thai: "Giao hàng thành công" },
-    });
-
+    })
     res.json({ totalOrders });
   } catch (error) {
     console.log("Error: ", error);
@@ -155,45 +140,6 @@ exports.getDoanhThu = async (req, res) => {
   }
 };
 
-//thông kê dooanh thu donhang theo tháng bằng sơ đồ cột theo 12 tháng
-exports.getDoanhThuDonHangTheoThang = async (req, res) => {
-  try {
-    // Lấy doanh thu theo tháng từ database
-    const doanhThuDonHangTheo = await DonHang.findAll({
-      attributes: [
-        // Lấy tháng từ thời gian tạo đơn hàng
-        [sequelize.fn("month", sequelize.col("thoi_gian_tao")), "month"], 
-        // Tính tổng doanh thu của các đơn hàng
-        [sequelize.fn("sum", sequelize.col("tong_tien")), "total"],
-      ],
-      where: {
-        trang_thai: "Giao hàng thành công", 
-      },
-      group: [sequelize.fn("month", sequelize.col("thoi_gian_tao"))],
-    });
-
-    // Tạo mảng tháng từ 1 đến 12, với doanh thu mặc định là 0
-    const doanhThuThang = new Array(12).fill(0);
-
-    // Cập nhật doanh thu cho các tháng có dữ liệu từ kết quả trả về
-    doanhThuDonHangTheo.forEach(item => {
-      const month = item.get("month") - 1
-      const totalRevenue = item.get("total") || 0;
-      doanhThuThang[month] = totalRevenue;
-    });
-
-    // Trả về kết quả với doanh thu cho tất cả 12 tháng
-    const result = doanhThuThang.map((totalRevenue, index) => ({
-      month: index + 1,
-      totalRevenue,
-    }));
-
-    res.json({ doanhThuDonHangTheo: result });
-  } catch (error) {
-    console.log("Error: ", error);
-    res.status(500).json({ error: error.message });
-  }
-};
 
 //thống kê sản phẩm bán chạy nhất theo biễu đồ cột và trạng thái là giao hàng thành công
 exports.getSanPhamBanChayNhat = async (req, res) => {
@@ -240,16 +186,13 @@ exports.getSanPhamBanChayNhat = async (req, res) => {
 
 
 exports.getDoanhThuDonHangTheoThoiGian = async (req, res) => {
-  const { period } = req.query; // 'day', 'month', or 'year'
-
+  const { period } = req.query; 
   if (!['day', 'month', 'year'].includes(period)) {
-    return res.status(400).json({ error: 'Invalid period parameter. Must be day, month, or year.' });
+    return res.status(400).json({ error: 'Không hợp lệ phải là ngày tháng năm' });
   }
-
   try {
     let attributes = [];
     let group = [];
-
     switch (period) {
       case 'day':
         attributes = [
@@ -273,10 +216,8 @@ exports.getDoanhThuDonHangTheoThoiGian = async (req, res) => {
         group = [sequelize.fn("year", sequelize.col("thoi_gian_tao"))];
         break;
       default:
-        // This case is already handled above
         break;
     }
-
     const doanhThuDonHangTheo = await DonHang.findAll({
       attributes,
       where: {
@@ -289,7 +230,6 @@ exports.getDoanhThuDonHangTheoThoiGian = async (req, res) => {
 
     switch (period) {
       case 'day':
-        // Initialize days 1-31
         const doanhThuNgay = new Array(31).fill(0);
         doanhThuDonHangTheo.forEach(item => {
           const day = item.get("day") - 1;
@@ -304,7 +244,6 @@ exports.getDoanhThuDonHangTheoThoiGian = async (req, res) => {
         }));
         break;
       case 'month':
-        // Initialize months 1-12
         const doanhThuThang = new Array(12).fill(0);
         doanhThuDonHangTheo.forEach(item => {
           const month = item.get("month") - 1;
@@ -319,7 +258,6 @@ exports.getDoanhThuDonHangTheoThoiGian = async (req, res) => {
         }));
         break;
       case 'year':
-        // Determine the range of years from the data
         const years = doanhThuDonHangTheo.map(item => item.get("year"));
         const minYear = Math.min(...years);
         const maxYear = Math.max(...years);

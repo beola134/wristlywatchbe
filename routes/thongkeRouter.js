@@ -14,10 +14,6 @@ router.get("/getNewUsersToday", ThongkeController.getNewUsersToday);
 //http://localhost:5000/thongke/getTotalProducts
 router.get("/getTotalProducts", ThongkeController.getTotalProducts);
 
-//tổng số lượng sản phẩm
-//http://localhost:5000/thongke/getTotalProductsCount
-router.get("/getTotalProductsCount", ThongkeController.getTotalProductsCount)
-
 //tổng thương hiệu
 //http://localhost:5000/thongke/getTotalThuonghieu
 router.get("/getTotalThuonghieu", ThongkeController.getTotalThuonghieu);
@@ -33,10 +29,6 @@ router.get("/getTotalDonHang", ThongkeController.getTotalDonHang);
 //tổng doanh thu
 //http://localhost:5000/thongke/getTotalRevenue
 router.get("/getTotalRevenue", ThongkeController.getDoanhThu);
-
-//tổng doanh thu theo tháng getDoanhThuDonHangTheoThang
-//http://localhost:5000/thongke/getTotalRevenueByMonth
-router.get("/getTotalRevenueByMonth", ThongkeController.getDoanhThuDonHangTheoThang);
 
 //thống kê sản phẩm bán chạy nhất theo biễu đồ cột
 //http://localhost:5000/thongke/getTopProducts

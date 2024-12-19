@@ -109,40 +109,6 @@ exports.updateCate = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
-
-//show danh muc theo id  5307799c-55ae-4bfd-83d4-3ed6e219ff5f và d3906bb8-4728-460e-8280-230deb79178c
-exports.getdanhmuc = async (req, res) => {
-  try {
-    const ids = ["d3906bb8-4728-460e-8280-230deb79178c"];
-    const cates = await Cate.findAll({ where: { _id: ids } });
-    if (!cates) {
-      return res.status(404).json({ error: "Không tìm thấy danh mục" });
-    }
-    res.json({ cates });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
-
-//sản phẩm khác 08bcf894-7d6b-4488-8639-701306321e22 và d3906bb8-4728-460e-8280-230deb79178c ,e9dd7461-30f5-42f4-9f69-512df6bdd51c,c247b7f4-01bf-4203-bd39-a4087b9dac08,e21693ed-8073-4739-af67-70064aed8d60
-exports.getSanPhamKhac = async (req, res) => {
-  try {
-    const ids = [
-      "08bcf894-7d6b-4488-8639-701306321e22",
-      "d3906bb8-4728-460e-8280-230deb79178c",
-      "e9dd7461-30f5-42f4-9f69-512df6bdd51c",
-      "c247b7f4-01bf-4203-bd39-a4087b9dac08",
-      "e21693ed-8073-4739-af67-70064aed8d60",
-    ];
-    const cates = await Cate.findAll({ where: { _id: ids } });
-    if (!cates) {
-      return res.status(404).json({ error: "Không tìm thấy danh mục" });
-    }
-    res.json({ cates });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
-  }
-};
 // danh muc
 exports.getAllCateadmin = async (req, res) => {
   try {

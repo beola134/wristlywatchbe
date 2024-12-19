@@ -40,106 +40,6 @@ exports.getAllUsers = async (req, res) => {
   }
 }
 
-// Quên mật khẩu
-exports.forgotPassword = async (req, res) => {
-  try {
-    const { email } = req.body;
-    const user = await Users.findOne({ where: { email } });
-
-    if (!user) {
-      return res.status(404).json({ message: "Người dùng không tồn tại" });
-    }
-    const resetToken = crypto.randomBytes(20).toString("hex");
-    const resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-    const resetPasswordExpire = Date.now() + 2 * 60 * 1000;
-    user.resetPasswordToken = resetPasswordToken;
-    user.resetPasswordExpires = new Date(resetPasswordExpire); //
-    await user.save();
-
-    const resetUrl = `http://localhost:3000/users/resetpassword/${resetToken}`;
-
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "watchwristly@gmail.com",
-        pass: "nebb uwva xdvb rvih",
-      },
-    });
-
-    const mailOptions = {
-      from: "nguyentantai612004@gmail.com",
-      to: email,
-      subject: "Đặt lại mật khẩu",
-      html: `
-          <div style="border: 1px solid #ddd; padding: 20px; margin: 20px auto; max-width: 600px; border-radius: 10px;">
-                  <div style="text-align: center;">
-                  <img src="https://nhaantoan.com/wp-content/uploads/2017/02/reset-password.png" alt="GitLab" width="50" />
-                  <h2>Xin chào, ${user.ten_dang_nhap}!</h2>
-                  <p>Ai đó (có thể là bạn) đã yêu cầu đặt lại mật khẩu cho tài khoản của bạn.</p>
-                  <p>Nếu bạn không thực hiện yêu cầu này, hãy bỏ qua email này.</p>
-                  <p>Nếu không, nhấp vào nút bên dưới để đặt lại mật khẩu:</p>
-                  <a href="${resetUrl}" style="padding: 10px 20px; background-color: #3498db; color: white; text-decoration: none; border-radius: 5px;">Đặt lại mật khẩu</a>
-          </div>
-          <div style="margin-top: 20px; text-align: center;">
-                    <p>Mọi người đều có thể đóng góp</p>
-                    <a href="https://about.gitlab.com/">GitLab Blog</a> · 
-                    <a href="https://twitter.com/gitlab">Twitter</a> · 
-                    <a href="https://facebook.com/gitlab">Facebook</a> · 
-                    <a href="https://linkedin.com/company/gitlab">LinkedIn</a>
-          </div>
-      </div>
-
-                  `,
-    };
-
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error("Lỗi gửi email:", error);
-        return res.status(500).json({ message: "Lỗi máy chủ" });
-      }
-      console.log("Email đã được gửi: " + info.response);
-      res.status(200).json({ message: "Email đã được gửi" });
-    });
-  } catch (error) {
-    console.error("Lỗi máy chủ:", error);
-    res.status(500).json({ message: "Lỗi máy chủ" });
-  }
-};
-
-// Đặt lại mật khẩu bằng email
-exports.resetPassword = async (req, res) => {
-  try {
-    const resetPasswordToken = crypto.createHash("sha256").update(req.params.resetToken).digest("hex");
-
-    const user = await Users.findOne({
-      where: {
-        resetPasswordToken: resetPasswordToken,
-        resetPasswordExpires: { [Op.gt]: new Date() },
-      },
-    });
-
-    if (!user) {
-      return res.status(400).json({ message: "Token không hợp lệ hoặc đã hết hạn" });
-    }
-
-    const { mat_khau } = req.body;
-    if (!mat_khau) {
-      return res.status(400).json({ message: "Mật khẩu không được để trống" });
-    }
-    const salt = await bcrypt.genSalt(10);
-    const hashPassword = await bcrypt.hash(mat_khau, salt);
-    user.mat_khau = hashPassword;
-    user.resetPasswordToken = null;
-    user.resetPasswordExpires = null;
-    await user.save();
-
-    res.status(200).json({ message: "Đặt lại mật khẩu thành công" });
-  } catch (error) {
-    console.error("Lỗi máy chủ:", error);
-    res.status(500).json({ message: "Lỗi máy chủ", error: error.message });
-  }
-};
-
 // login tài khoản bằng email và mật khẩu
 exports.login = async (req, res) => {
   try {
@@ -151,8 +51,8 @@ exports.login = async (req, res) => {
       return res.status(400).json({ message: "Email không tồn tại" });
     }
 
-    // Kiểm tra mật khẩu
-    const validPass = await bcrypt.compare(mat_khau, user.mat_khau);
+    // Kiểm tra mật khẩu có trùng với mật khẩu trong CSDL không
+    const validPass = await bcrypt.compare(mat_khau, user.mat_khau); 
     if (!validPass) {
       return res.status(400).json({ message: "Mật khẩu không hợp lệ" });
     }

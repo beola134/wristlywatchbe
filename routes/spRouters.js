@@ -6,10 +6,6 @@ const productController = require("../controllers/spController");
 //http://localhost:5000/product/allsp
 router.get("/allsp", productController.getAllProducts);
 
-//show sản phẩm theo thuong hieu
-//http://localhost:5000/product/thuonghieu/:id
-router.get("/thuonghieu/:id", productController.getProductsByThuongHieu);
-
 //chi tiết sản phẩm theo id
 //http://localhost:5000/product/chitietsp/:id
 router.get("/chitietsp/:id", productController.getProductById);

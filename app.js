@@ -47,12 +47,12 @@ sequelize.authenticate()
 
     // Đồng bộ các mô hình và khởi động server
     sequelize.sync()
-    .then(() => {
-      const PORT = process.env.PORT || 5000; // Sử dụng cổng từ môi trường (Heroku) hoặc mặc định 5000
-      app.listen(PORT, () => {
-        console.log(`Server đang chạy trên http://localhost:${PORT}`);
-      });
-    })
+      .then(() => {
+        const PORT = process.env.PORT || 5000; // Sử dụng cổng từ môi trường (Heroku) hoặc mặc định 5000
+        app.listen(PORT, () => {
+          console.log(`Server đang chạy trên http://localhost:${PORT}`);
+        });
+      })
       .catch(err => {
         console.error('Không thể đồng bộ cơ sở dữ liệu:', err);
       });
