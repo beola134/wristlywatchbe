@@ -129,7 +129,9 @@ exports.getTotalUsers = async (req, res) => {
 // Tính tổng số đơn hàng dành cho admin
 exports.getTotalDonHang = async (req, res) => {
   try {
-    const totalOrders = await DonHang.count();
+    const totalOrders = await DonHang.count({
+      where: { trang_thai: "Giao hàng thành công" },
+    });
 
     res.json({ totalOrders });
   } catch (error) {
